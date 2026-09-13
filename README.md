@@ -1,6 +1,6 @@
-# 🐾 PetVita - Petshop Landing Page (1ª AC - Projeto de Software)
+# 🐾 PetVita - (Projeto de Software)
 
-Este projeto consiste na entrega da disciplina de **Projeto de Software**, com foco na criação da **Landing Page** para um Petshop completo, desenvolvida em **React**.
+Este projeto consiste na entrega da disciplina de **Projeto de Software**, desenvolvida em **React**.
 
 ---
 
