@@ -1,7 +1,4 @@
-import React from 'react';
-import { services } from '../data/mockData';
-
-export default function Services() {
+export default function ServicesSection({ services }) {
   return (
     <section className="services-section" id="servicos">
       <div className="section-container">
@@ -12,14 +9,13 @@ export default function Services() {
             Profissionais qualificados para entregar o melhor tratamento para o seu filho de quatro patas.
           </p>
         </div>
-
         <div className="services-grid">
-          {services.map((srv) => (
-            <div key={srv.id} className="service-card">
-              <div className="service-icon">{srv.icon}</div>
-              <h3 className="service-title">{srv.title}</h3>
-              <p className="service-desc">{srv.desc}</p>
-            </div>
+          {services.map(([icon, title, description]) => (
+            <article className="service-card" key={title}>
+              <div className="service-icon" aria-hidden="true">{icon}</div>
+              <h3 className="service-title">{title}</h3>
+              <p className="service-desc">{description}</p>
+            </article>
           ))}
         </div>
       </div>

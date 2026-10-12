@@ -1,58 +1,84 @@
-# 🐾 PetVita - (Projeto de Software)
+# PetVita - Petshop
 
-Este projeto consiste na entrega da disciplina de **Projeto de Software**, desenvolvida em **React**.
+Este projeto consiste na entrega da disciplina de Projeto de Software, desenvolvida em React e Vite, backend Flask, Flask-Login e SQLite.
 
----
+## Requisitos
 
-## 🎨 Identidade Visual & Design
-- **Cor Predominante:** Amarelo Gema Vivo (`#FFC700` / `#FFB800`)
-- **Cor de Contraste:** Roxo / Lilás (`#6B21A8` / `#8B5CF6`)
+- Python 3.8 ou superior
+- Node.js 20.19+ ou 22.12+
 
----
+## Desenvolvimento
 
-## 🚀 Como Rodar o Projeto Localmente
+1. Crie e ative um ambiente virtual Python:
 
-### Pré-requisitos
-Ter o **Node.js** (versão 18 ou superior) instalado em sua máquina.
-
-### Passo a Passo
-
-1. **Descompactar o projeto**:
-   Extraia o arquivo `.zip` para uma pasta de sua preferência.
-
-2. **Abrir o terminal na pasta do projeto**:
-   ```bash
-   cd petshop-react-app
+   ```powershell
+   python -m venv venv
+   .\venv\Scripts\Activate.ps1
    ```
 
-3. **Instalar as dependências**:
-   ```bash
+2. Instale as dependências do backend:
+
+   ```powershell
+   pip install -r requirements.txt
+   ```
+
+3. Instale as dependências do front-end:
+
+   ```powershell
    npm install
    ```
 
-4. **Iniciar o servidor de desenvolvimento**:
-   ```bash
+4. Em terminais separados, inicie o Flask e o Vite:
+
+   ```powershell
+   python run.py
+   ```
+
+   ```powershell
    npm run dev
    ```
 
-5. **Acessar no navegador**:
-   Abra o link exibido no terminal (`http://localhost:5173/`).
+5. Acesse o endereço exibido pelo Vite (por padrão, `http://127.0.0.1:5173`).
 
----
+O Vite encaminha as requisições de autenticação e sessão para o Flask em `http://127.0.0.1:5000`.
 
-## 📋 Estrutura da Entrega para a 1ª AC (Checklist de Requisitos do Professor)
+## Build de produção
 
-De acordo com as orientações da disciplina:
-- [x] **Projeto Front-End em React** pronto e funcional.
-- [x] **Vitrine de Produtos / Catálogo** na extensão da página (exibição de produtos sem necessidade de backend ainda).
-- [x] **Seção Sobre Nós & Hero Impactante**.
-- [x] **Contatos simulados no Footer** (Endereço, Telefone, WhatsApp, Horários).
+Gere o front-end compilado e inicie o Flask:
 
----
+```powershell
+npm run build
+python run.py
+```
 
-## 📅 Calendário de Entregas & Evolução do TCC
+A aplicação ficará disponível em `http://127.0.0.1:5000`.
 
-- **1ª AC (14/09)**: Landing Page, Identidade Visual, Vitrine de Produtos & Apresentação (Entregue).
-- **2ª AC (13/10)**: Introdução do **Back-end** (API Node.js/Express ou Python) para gerenciamento de catálogo/serviços e agendamento.
-- **3ª AC (08/11)**: Integração com **Banco de Dados** (PostgreSQL/MongoDB) e autenticação de usuários (Área do Cliente e Painel Admin).
-- **Entrega Final / Prova (22/11)**: Aplicação 3 camadas completa, com fluxo de compra/agendamento, painel administrativo e relatório final.
+## Arquitetura do front-end
+
+O front-end segue MVP (Model-View-Presenter), com a camada de interface React organizada em `src/`:
+
+- `src/models/`: dados e operações da aplicação, como catálogo e consulta da sessão Flask.
+- `src/presenters/`: estado e regras de apresentação das telas, expostos por hooks React.
+- `src/views/`: composição das páginas Home, autenticação, painel e seleção da tela atual.
+- `src/components/`: componentes reutilizáveis e partes da Home, separados em `common/` e `home/`. O painel lateral do carrinho está em `common/CartDrawer.jsx`.
+- `src/main.jsx`: ponto de entrada do React e carregamento dos estilos.
+- `app/static/css/`: estilos globais compartilhados pelas telas React.
+- `app/`: backend Flask, autenticação, modelos e integração com o build do front-end.
+- `public/`: imagens usadas pelo front-end.
+- `dist/`: build do Vite, gerado por `npm run build`.
+- `petshop.db`: banco de dados SQLite.
+- `run.py`: ponto de entrada do servidor Flask.
+
+A Home é composta por `HeroSection`, `ProductsSection` (com `ProductCard`) e `ServicesSection`. Seu estado de busca, categoria e carrinho fica no presenter `useHomePresenter`; os dados dos produtos ficam no model `productModel`. Produtos sem imagem definida mantêm o espaço reservado em branco no cartão para receber uma imagem depois.
+
+O carrinho abre em um painel lateral e permite alterar quantidades ou remover itens. Os dados do carrinho são mantidos durante a sessão atual da página.
+
+O hero da Home usa `public/header.png` à direita, com texto e botões à esquerda em um fundo branco neutro. Um cartão de destaque abaixo da imagem completa a composição.
+
+## Rotas principais
+
+- `/`: pagina inicial.
+- `/dashboard`: painel para usuarios autenticados.
+- `/auth/login`: login.
+- `/auth/register`: cadastro.
+- `/auth/logout`: sair da conta.
