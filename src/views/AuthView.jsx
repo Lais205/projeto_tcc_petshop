@@ -10,14 +10,14 @@ export default function AuthView({ isRegister }) {
         <section className="auth-left">
           <img
             className="auth-image"
-            src="/login.jpg"
+            src={isRegister ? "/loginn.jpg?v=2" : "/cadastro.jpg?v=2"}
             alt="Pets recebendo carinho"
           />
         </section>
         <section className="auth-right">
           <div className="auth-header">
             <a href="/" className="auth-logo">
-              <span className="logo-badge">🐾</span><span className="logo-text">PetVita</span>
+              <img src="/logo_petvita.png" alt="PetVita Logo" style={{ height: '50px', width: 'auto' }} />
             </a>
             <div className="auth-nav">
               <a className="auth-nav-link" href={isRegister ? '/auth/login' : '/auth/register'}>

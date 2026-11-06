@@ -1,137 +1,48 @@
-export const products = [
-  {
-    name: 'Ração Premium Cães Adultos 15kg',
-    category: 'Rações',
-    rating: '4.8',
-    price: '151,92',
-    oldPrice: '189,90',
-    badge: '-20%',
-    image: '/produto_01.png',
-    keywords: 'cães cachorro',
-  },
-  {
-    name: 'Osso Fêmur Suíno para Cães',
-    category: 'Petiscos',
-    rating: '4.9',
-    price: '13,99',
-    badge: 'Novo',
-    image: '/produto_02.png',
-    keywords: 'cães cachorro',
-  },
-  {
-    name: 'Brinquedo Bola Maluca Spinball',
-    category: 'Brinquedos',
-    rating: '4.5',
-    price: '62,90',
-    image: '/produto_03.png',
-    keywords: 'cães cachorro',
-  },
-  {
-    name: 'Shampoo Antipulgas para Cães 200ml',
-    category: 'Higiene',
-    rating: '4.7',
-    price: '42,00',
-    oldPrice: '59,90',
-    badge: '-15%',
-    image: '/produto_04.png',
-    keywords: 'cães gatos',
-  },
-  {
-    name: 'Coleira para Cães Honey Zee',
-    category: 'Cães',
-    rating: '4.8',
-    price: '79,00',
-    image: '/produto_05.png',
-    keywords: 'cachorro passeio',
-  },
-  {
-    name: 'Arranhador Nau Três Andares',
-    category: 'Gatos',
-    rating: '4.7',
-    price: '1.046,90',
-    image: '/produto_06.png',
-    keywords: 'felinos arranhar',
-  },
-  {
-    name: 'Ração Úmida Whiskas Sachê Gatos Adultos Carne, Frango e Salmão',
-    category: 'Rações',
-    rating: '4.9',
-    price: '20,93',
-    image: '/produto_07.png',
-    keywords: 'gatos felinos alimentação',
-  },
-  {
-    name: 'Petisco Bifinho Frango 65g',
-    category: 'Petiscos',
-    rating: '4.8',
-    price: '5,70',
-    image: '/produto_08.png',
-    keywords: 'cães cachorro recompensa',
-  },
-  {
-    name: 'Mordedor de Corda para Cães',
-    category: 'Brinquedos',
-    rating: '4.6',
-    price: '26,90',
-    image: '/produto_09.png',
-    keywords: 'cães cachorro diversão',
-  },
-  {
-    name: 'Areia para Gatos Carecat Perfumada 4 kg',
-    category: 'Higiene',
-    rating: '4.7',
-    price: '17,01',
-    image: '/produto_10.png',
-    keywords: 'gatos felinos limpeza',
-  },
-  {
-    name: 'Combo Antipulgas Cães Fiprolex 11 a 20kg Único',
-    category: 'Higiene',
-    rating: '4.9',
-    price: '67,90',
-    oldPrice: '97,50',
-    badge: 'Oferta',
-    image: '/produto_11.png',
-    keywords: 'cães gatos proteção',
-  },
-  {
-    name: 'Ração GoldenCães Adultos Raças Pequenas Frango e Abóbora 3kg',
-    category: 'Rações',
-    rating: '4.8',
-    price: '65,99',
-    image: '/produto_12.png',
-    keywords: 'cães cachorro alimentação',
-  },
-];
+export async function fetchProducts({ featured = false, category = null, search = null, minPrice = null, maxPrice = null, sortBy = 'name', page = 1, perPage = 12 } = {}) {
+  const params = new URLSearchParams();
+  if (featured) params.append('featured', 'true');
+  if (category) params.append('category', category);
+  if (search) params.append('search', search);
+  if (minPrice !== null) params.append('min_price', minPrice);
+  if (maxPrice !== null) params.append('max_price', maxPrice);
+  params.append('sort_by', sortBy);
+  params.append('page', page);
+  params.append('per_page', perPage);
 
-export const categories = [
-  'Cães',
-  'Gatos',
-  'Rações',
-  'Petiscos',
-  'Brinquedos',
-  'Higiene',
-  'Ofertas',
-];
+  const response = await fetch(`/api/products?${params.toString()}`);
+  if (!response.ok) throw new Error('Failed to fetch products');
+  return await response.json();
+}
 
-export const services = [
-  ['✂️', 'Banho & Tosa', 'Serviço profissional para deixar seu pet sempre bonito e saudável.'],
-  ['🏥', 'Veterinário', 'Atendimento veterinário completo com profissionais especializados.'],
-  ['🏨', 'Hotelzinho', 'Hospedagem segura e confortável quando você precisa viajar.'],
-];
+export async function fetchCategories() {
+  const response = await fetch('/api/categories');
+  if (!response.ok) throw new Error('Failed to fetch categories');
+  const categories = await response.json();
+  return ['Todos', ...categories, 'Ofertas'];
+}
+
+export async function fetchProduct(productId) {
+  try {
+    const response = await fetch(`/api/products/${productId}`);
+    if (!response.ok) throw new Error('Failed to fetch product');
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
+}
 
 export function filterProducts(items, search, category) {
   const query = search.trim().toLocaleLowerCase('pt-BR');
 
   return items.filter((product) => {
-    const searchableText = `${product.name} ${product.category} ${product.keywords}`
+    const searchableText = `${product.name} ${product.category} ${product.keywords || ''}`
       .toLocaleLowerCase('pt-BR');
     const matchesSearch = !query || searchableText.includes(query);
     const matchesCategory = !category
       || category === 'Todos'
       || (category === 'Ofertas' && Boolean(product.badge))
       || product.category === category
-      || product.keywords.includes(category.toLocaleLowerCase('pt-BR'));
+      || (product.keywords && product.keywords.includes(category.toLocaleLowerCase('pt-BR')));
 
     return matchesSearch && matchesCategory;
   });
@@ -156,3 +67,9 @@ export function formatCurrency(value) {
     currency: 'BRL',
   }).format(value);
 }
+
+export const services = [
+  ['✂️', 'Banho & Tosa', 'Serviço profissional para deixar seu pet sempre bonito e saudável.'],
+  ['🏥', 'Veterinário', 'Atendimento veterinário completo com profissionais especializados.'],
+  ['🏨', 'Hotelzinho', 'Hospedagem segura e confortável quando você precisa viajar.'],
+];

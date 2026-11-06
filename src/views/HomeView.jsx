@@ -1,4 +1,3 @@
-import CartDrawer from '../components/common/CartDrawer.jsx';
 import SiteFooter from '../components/common/SiteFooter.jsx';
 import SiteHeader from '../components/common/SiteHeader.jsx';
 import HeroSection from '../components/home/HeroSection.jsx';
@@ -12,17 +11,10 @@ export default function HomeView({ authenticated, user }) {
     setSearch,
     category,
     setCategory,
-    cartItems,
-    cartCount,
-    cartTotal,
-    isCartOpen,
-    openCart,
-    closeCart,
-    addToCart,
-    updateCartQuantity,
     visibleProducts,
     categories,
     services,
+    loading,
   } = useHomePresenter();
 
   return (
@@ -32,26 +24,18 @@ export default function HomeView({ authenticated, user }) {
         user={user}
         search={search}
         onSearchChange={setSearch}
-        cartCount={cartCount}
-        isCartOpen={isCartOpen}
-        onCartOpen={openCart}
+        isCartOpen={false}
+        onCartOpen={() => {}}
         category={category}
         onCategoryChange={setCategory}
         categories={categories}
+        showAllProducts={false}
       />
       <main>
         <HeroSection />
-        <ProductsSection products={visibleProducts} onAddToCart={addToCart} />
+        <ProductsSection products={visibleProducts} loading={loading} showViewAllButton={true} />
         <ServicesSection services={services} />
       </main>
-      <CartDrawer
-        isOpen={isCartOpen}
-        items={cartItems}
-        itemCount={cartCount}
-        total={cartTotal}
-        onClose={closeCart}
-        onChangeQuantity={updateCartQuantity}
-      />
       <SiteFooter />
     </>
   );

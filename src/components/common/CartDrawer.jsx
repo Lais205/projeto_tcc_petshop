@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
+import { useCart } from '../../context/CartContext.jsx';
 
 export default function CartDrawer({
   isOpen,
-  items,
-  itemCount,
-  total,
   onClose,
-  onChangeQuantity,
 }) {
+  const { cartItems, cartCount, cartTotal, updateCartQuantity, removeFromCart, clearCart, loading } = useCart();
   useEffect(() => {
     if (!isOpen) return undefined;
 
@@ -41,7 +39,7 @@ export default function CartDrawer({
         <div className="cart-drawer-header">
           <div>
             <h2>Seu carrinho</h2>
-            <p>{itemCount} {itemCount === 1 ? 'item' : 'itens'}</p>
+            <p>{cartCount} {cartCount === 1 ? 'item' : 'itens'}</p>
           </div>
           <button
             className="cart-close"
@@ -52,41 +50,60 @@ export default function CartDrawer({
             ×
           </button>
         </div>
-        {items.length ? (
+        {cartItems.length ? (
           <>
             <ul className="cart-items">
-              {items.map(({ product, quantity }) => (
-                <li className="cart-item" key={product.name}>
-                  <img src={product.image} alt="" />
+              {cartItems.map((item) => (
+                <li className="cart-item" key={item.id}>
+                  <img src={item.image} alt="" />
                   <div className="cart-item-info">
-                    <h3>{product.name}</h3>
-                    <p>R$ {product.price}</p>
-                    <div className="cart-quantity" aria-label={`Quantidade de ${product.name}`}>
+                    <h3>{item.name}</h3>
+                    <p>R$ {item.price}</p>
+                    <div className="cart-quantity" aria-label={`Quantidade de ${item.name}`}>
                       <button
                         type="button"
-                        aria-label={`Remover uma unidade de ${product.name}`}
-                        onClick={() => onChangeQuantity(product.name, -1)}
+                        aria-label={`Remover uma unidade de ${item.name}`}
+                        onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
+                        disabled={loading}
                       >
                         −
                       </button>
-                      <span>{quantity}</span>
+                      <span>{item.quantity}</span>
                       <button
                         type="button"
-                        aria-label={`Adicionar uma unidade de ${product.name}`}
-                        onClick={() => onChangeQuantity(product.name, 1)}
+                        aria-label={`Adicionar uma unidade de ${item.name}`}
+                        onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
+                        disabled={loading}
                       >
                         +
                       </button>
                     </div>
+                    <button
+                      className="btn-secondary"
+                      type="button"
+                      onClick={() => removeFromCart(item.id)}
+                      disabled={loading}
+                      style={{ marginTop: '8px' }}
+                    >
+                      Remover
+                    </button>
                   </div>
                 </li>
               ))}
             </ul>
             <div className="cart-drawer-footer">
-              <p><span>Subtotal</span><strong>{total}</strong></p>
-              <button className="btn-primary" type="button" onClick={onClose}>
-                Continuar comprando
-              </button>
+              <p><span>Subtotal</span><strong>{cartTotal}</strong></p>
+              <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                <button className="btn-secondary" type="button" onClick={clearCart}
+                  disabled={loading}
+                  style={{ flex: 1 }}
+                >
+                  Limpar Carrinho
+                </button>
+                <button className="btn-primary" type="button" onClick={onClose} style={{ flex: 1 }}>
+                  Continuar comprando
+                </button>
+              </div>
             </div>
           </>
         ) : (

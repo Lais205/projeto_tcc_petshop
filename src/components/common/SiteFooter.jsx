@@ -4,7 +4,7 @@ export default function SiteFooter() {
       <div className="footer-grid">
         <div className="footer-col">
           <a className="logo footer-logo" href="/">
-            <span className="logo-badge">🐾</span><span>PetVita</span>
+            <img src="/logo_petvita_2.png?v=2" alt="PetVita Logo" style={{ height: '40px', width: 'auto' }} />
           </a>
           <p>O petshop feito com amor. Produtos, estética e atendimento veterinário.</p>
           <div className="hours-badge">

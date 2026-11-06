@@ -1,15 +1,19 @@
+import { useCart } from '../../context/CartContext.jsx';
+
 export default function SiteHeader({
   authenticated,
   user,
   search,
   onSearchChange,
-  cartCount,
   isCartOpen,
   onCartOpen,
   category,
   onCategoryChange,
   categories,
+  showAllProducts = false,
 }) {
+  const { cartCount: contextCartCount } = useCart();
+  const displayCartCount = contextCartCount;
   return (
     <header className="header" id="inicio">
       <div className="top-bar">
@@ -18,8 +22,7 @@ export default function SiteHeader({
       </div>
       <div className="nav-container">
         <a className="logo" href="/" aria-label="PetVita - início">
-          <span className="logo-badge">🐾</span>
-          <span>PetVita</span>
+          <img src="/logo_petvita.png" alt="PetVita Logo" style={{ height: '50px', width: 'auto' }} />
         </a>
         <label className="search-bar">
           <span className="search-icon" aria-hidden="true">🔍</span>
@@ -32,6 +35,9 @@ export default function SiteHeader({
           />
         </label>
         <div className="nav-actions">
+          {!showAllProducts && (
+            <a className="nav-btn" href="/products">Produtos</a>
+          )}
           {authenticated ? (
             <>
               <a className="nav-btn" href="/dashboard">
@@ -48,13 +54,13 @@ export default function SiteHeader({
           <button
             className="nav-btn cart-button"
             type="button"
-            aria-label={`Carrinho, ${cartCount} ${cartCount === 1 ? 'item' : 'itens'}`}
+            aria-label={`Carrinho, ${displayCartCount} ${displayCartCount === 1 ? 'item' : 'itens'}`}
             aria-expanded={isCartOpen}
             aria-controls="cart-drawer"
             onClick={onCartOpen}
           >
             <span aria-hidden="true">🛒</span> Carrinho
-            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+            {displayCartCount > 0 && <span className="cart-count">{displayCartCount}</span>}
           </button>
         </div>
       </div>

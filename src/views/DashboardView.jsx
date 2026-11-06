@@ -15,7 +15,7 @@ export default function DashboardView({ user }) {
       <header className="header">
         <div className="nav-container">
           <a className="logo" href="/">
-            <span className="logo-badge">🐾</span><span>PetVita</span>
+            <img src="/logo_petvita.png" alt="PetVita Logo" style={{ height: '50px', width: 'auto' }} />
           </a>
           <div className="nav-actions">
             <a className="nav-btn" href="/dashboard">

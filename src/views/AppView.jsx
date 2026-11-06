@@ -3,32 +3,33 @@ import useAppPresenter from '../presenters/useAppPresenter.js';
 import AuthView from './AuthView.jsx';
 import DashboardView from './DashboardView.jsx';
 import HomeView from './HomeView.jsx';
+import ProductsView from './ProductsView.jsx';
+import ProductDetailView from './ProductDetailView.jsx';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 export default function AppView() {
-  const path = window.location.pathname;
-  const session = useAppPresenter(path);
-  let page;
-
-  if (path === '/auth/login' || path === '/auth/register') {
-    page = <AuthView isRegister={path === '/auth/register'} />;
-  } else if (path === '/dashboard') {
-    if (session.authenticated) {
-      page = <DashboardView user={session.user} />;
-    } else {
-      page = (
-        <main className="section-container">
-          <p>{session.loading ? 'Carregando sua conta...' : 'Não foi possível verificar sua conta.'}</p>
-        </main>
-      );
-    }
-  } else {
-    page = <HomeView authenticated={session.authenticated} user={session.user} />;
-  }
+  const location = useLocation();
+  const session = useAppPresenter(location.pathname);
 
   return (
     <>
       <FlashMessages messages={session.messages} error={session.error} />
-      {page}
+      <Routes>
+        <Route path="/auth/login" element={<AuthView isRegister={false} />} />
+        <Route path="/auth/register" element={<AuthView isRegister={true} />} />
+        <Route path="/dashboard" element={
+          session.authenticated ? (
+            <DashboardView user={session.user} />
+          ) : (
+            <main className="section-container">
+              <p>{session.loading ? 'Carregando sua conta...' : 'Não foi possível verificar sua conta.'}</p>
+            </main>
+          )
+        } />
+        <Route path="/products" element={<ProductsView authenticated={session.authenticated} user={session.user} />} />
+        <Route path="/product/:id" element={<ProductDetailView authenticated={session.authenticated} user={session.user} />} />
+        <Route path="/" element={<HomeView authenticated={session.authenticated} user={session.user} />} />
+      </Routes>
     </>
   );
 }
